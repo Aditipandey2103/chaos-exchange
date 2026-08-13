@@ -7,6 +7,7 @@ from schemas.company import CompanyOut
 from models.user import User
 from schemas.user import UserOut
 from routers import trading
+from redis_client import redis_client
 
 app = FastAPI(title="Chaos Exchange API")
 app.include_router(trading.router)
@@ -33,3 +34,8 @@ async def get_users(db: AsyncSession = Depends(get_db)):
     users = result.scalars().all()
     return users
 
+@app.get("/redis-check")
+async def redis_check():
+    await redis_client.set("test_key", "chaos exchange is alive")
+    value = await redis_client.get("test_key")
+    return {"redis_says": value}
