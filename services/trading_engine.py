@@ -7,6 +7,7 @@ from models.trade import Trade
 from services.pricing import calculate_new_price
 from exception import InsufficientFundsError, InsufficientSharesError
 import uuid
+import json
 from redis_client import redis_client
 
 
@@ -67,6 +68,10 @@ async def execute_buy(user_id: uuid.UUID, company_id: uuid.UUID, quantity: int, 
     # 8. Commit everything together — atomic
     await db.commit()
     await redis_client.set(f"price:{company.ticker}", str(new_price))
+    await redis_client.publish("price_updates", json.dumps({
+        "ticker": company.ticker,
+        "price": new_price,
+    }))
 
     return {
         "new_price": new_price,
@@ -122,6 +127,10 @@ async def execute_sell(user_id: uuid.UUID, company_id: uuid.UUID, quantity: int,
     # 9. Commit atomically
     await db.commit()
     await redis_client.set(f"price:{company.ticker}", str(new_price))
+    await redis_client.publish("price_updates", json.dumps({
+        "ticker": company.ticker,
+        "price": new_price,
+    }))
 
     return {
         "new_price": new_price,
