@@ -6,8 +6,10 @@ from models.company import Company
 from schemas.company import CompanyOut
 from models.user import User
 from schemas.user import UserOut
+from routers import trading
 
 app = FastAPI(title="Chaos Exchange API")
+app.include_router(trading.router)
 
 @app.get("/")
 async def root():
