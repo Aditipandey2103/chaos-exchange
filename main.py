@@ -8,16 +8,19 @@ from schemas.company import CompanyOut
 from models.user import User
 from schemas.user import UserOut
 from routers import trading
+from routers import portfolio
 from redis_client import redis_client
 from fastapi import WebSocket, WebSocketDisconnect
 from websocket.manager import manager
 from websocket.redis_listener import redis_listener
+
 
 app = FastAPI(title="Chaos Exchange API")
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(redis_listener())
 app.include_router(trading.router)
+app.include_router(portfolio.router)
 
 @app.get("/")
 async def root():
@@ -49,15 +52,15 @@ async def redis_check():
 
 @app.websocket("/ws/market")
 async def websocket_endpoint(websocket: WebSocket):
-    print(">>> WEBSOCKET REQUEST RECEIVED")
+    
 
     await manager.connect(websocket)
 
-    print(">>> WEBSOCKET ACCEPTED")
+    
 
     try:
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        print(">>> WEBSOCKET DISCONNECTED")
+        
