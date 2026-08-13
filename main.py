@@ -14,12 +14,18 @@ from redis_client import redis_client
 from fastapi import WebSocket, WebSocketDisconnect
 from websocket.manager import manager
 from websocket.redis_listener import redis_listener
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from services.news_generator import generate_news_event
 
 
+scheduler = AsyncIOScheduler()#for news generator
 app = FastAPI(title="Chaos Exchange API")
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(redis_listener())
+    scheduler.add_job(generate_news_event, 'interval', minutes=2)
+    scheduler.start()
+
 app.include_router(trading.router)
 app.include_router(portfolio.router)
 app.include_router(leaderboard.router)
