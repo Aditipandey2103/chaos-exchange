@@ -11,6 +11,7 @@ from routers import trading
 from routers import portfolio
 from routers import leaderboard
 from routers import companies, users
+from routers import auth
 from redis_client import redis_client
 from fastapi import WebSocket, WebSocketDisconnect
 from websocket.manager import manager
@@ -32,6 +33,7 @@ app.include_router(portfolio.router)
 app.include_router(leaderboard.router)
 app.include_router(companies.router)
 app.include_router(users.router)
+app.include_router(auth.router)
 
 @app.get("/")
 async def root():
