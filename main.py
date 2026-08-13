@@ -9,6 +9,7 @@ from models.user import User
 from schemas.user import UserOut
 from routers import trading
 from routers import portfolio
+from routers import leaderboard
 from redis_client import redis_client
 from fastapi import WebSocket, WebSocketDisconnect
 from websocket.manager import manager
@@ -21,6 +22,7 @@ async def startup_event():
     asyncio.create_task(redis_listener())
 app.include_router(trading.router)
 app.include_router(portfolio.router)
+app.include_router(leaderboard.router)
 
 @app.get("/")
 async def root():
