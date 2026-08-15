@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text,select
@@ -22,6 +23,15 @@ from services.news_generator import generate_news_event
 
 scheduler = AsyncIOScheduler()#for news generator
 app = FastAPI(title="Chaos Exchange API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(redis_listener())

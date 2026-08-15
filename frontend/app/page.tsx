@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCompanies } from "../lib/api";
 import {
   Activity,
   BarChart3,
@@ -59,6 +60,24 @@ const news = [
 
 export default function Home() {
   const [activeNav, setActiveNav] = useState("Markets");
+
+  const [backendCompanies, setBackendCompanies] = useState([]);
+
+  useEffect(() => {
+    async function loadCompanies() {
+      try {
+        const data = await getCompanies();
+
+        console.log("BACKEND COMPANIES:", data);
+
+        setBackendCompanies(data);
+      } catch (error) {
+        console.error("BACKEND ERROR:", error);
+      }
+    }
+
+    loadCompanies();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#0b0e11] text-[#e6e8eb]">
