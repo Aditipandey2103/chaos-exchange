@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0b0e11;
+  --surface: #12161b;
+  --surface-hover: #171c22;
+  --border: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #e6e8eb;
+  --text-secondary: #8b92a0;
+  --text-muted: #5f6672;
+
+  --up: #16c784;
+  --down: #ea3943;
+  --live: #3b82f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.mono {
+  font-family: "Courier New", monospace;
+  font-variant-numeric: tabular-nums;
+}
