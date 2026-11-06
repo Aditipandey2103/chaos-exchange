@@ -8,6 +8,7 @@ from database import async_session
 from models.company import Company
 from services.pricing import calculate_new_price
 from redis_client import redis_client
+import traceback
 
 load_dotenv()
 
@@ -39,7 +40,7 @@ async def generate_news_event():
         # 2. Call the LLM
         try:
             response = groq_client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                model="openai/gpt-oss-20b",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": f"Company name: {company.name}\nDescription: {company.description}\n\nGenerate one headline."}
@@ -49,8 +50,12 @@ async def generate_news_event():
             )
             news_data = json.loads(response.choices[0].message.content)
         except Exception as e:
-            print(f">>> NEWS GENERATION FAILED: {e}")
+            print(">>> NEWS GENERATION FAILED")
+            print("Error type:", type(e).__name__)
+            print("Error details:", repr(e))
+            traceback.print_exc()
             return
+
 
         # 3. Apply price impact using existing pricing logic
         trade_type = "buy" if news_data["sentiment"] == "positive" else "sell"
